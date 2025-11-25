@@ -39,7 +39,7 @@ docker build -t mern-backend .
 
 `docker compose up -d`
 
-=======
+
 # A simple MERN stack application
 
 **Note** - To run this project using `docker compose`, follow the below steps.
