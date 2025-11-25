@@ -15,7 +15,7 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   let collection = await db.collection("records");
   let results = await collection.find({}).toArray();
-  res.send(results).status(200);
+  res.status(200).send(results);
 });
 
 // This section will help you get a single record by id
@@ -24,8 +24,11 @@ router.get("/:id", async (req, res) => {
   let query = { _id: new ObjectId(req.params.id) };
   let result = await collection.findOne(query);
 
-  if (!result) res.send("Not found").status(404);
-  else res.send(result).status(200);
+  if (!result) {
+    res.status(404).send("Not found");
+  } else {
+    res.status(200).send(result);
+  }
 });
 
 // This section will help you create a new record.
@@ -35,10 +38,14 @@ router.post("/", async (req, res) => {
       name: req.body.name,
       position: req.body.position,
       level: req.body.level,
+      age: req.body.age,                // extra field
+      location: req.body.location,      // extra field
+      experience: req.body.experience   // extra field
     };
+
     let collection = await db.collection("records");
     let result = await collection.insertOne(newDocument);
-    res.send(result).status(204);
+    res.status(201).send(result);       // 201 = Created
   } catch (err) {
     console.error(err);
     res.status(500).send("Error adding record");
@@ -54,12 +61,15 @@ router.patch("/:id", async (req, res) => {
         name: req.body.name,
         position: req.body.position,
         level: req.body.level,
+        age: req.body.age,               // extra field
+        location: req.body.location,     // extra field
+        experience: req.body.experience  // extra field
       },
     };
 
     let collection = await db.collection("records");
     let result = await collection.updateOne(query, updates);
-    res.send(result).status(200);
+    res.status(200).send(result);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error updating record");
@@ -74,7 +84,7 @@ router.delete("/:id", async (req, res) => {
     const collection = db.collection("records");
     let result = await collection.deleteOne(query);
 
-    res.send(result).status(200);
+    res.status(200).send(result);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error deleting record");
